@@ -1,4 +1,5 @@
-# nftfileupload
+# Upload File to IPFS
+
 Simple demo for how to upload an image to IPFS using Moralis
 
 This repo contains a simple demo that demonstrates how an image can be uploaded to IPFS using Moralis JavaScript SDK. 
