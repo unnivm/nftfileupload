@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <!-- Moralis SDK code -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://unpkg.com/moralis/dist/moralis.js"></script>
+  </head>
+  <body>
+    <h1>IPFS File Uploader</h1>
+
+    <button id="btn-login" onclick="login()">Login</button>
+    <p></p>
+    <input type="text" name="metadataName" id="metadataName">
+    <p></p>
+    <textarea name="description" cols="30" rows="10" id="description"></textarea>
+    <p></p>
+    <input type="file" name="fileInput" id="fileInput">
+    <p></p>
+    <button onclick="doUpload()" id="btn-upload">Upload</button>
+
+    <script>
+      // connect to Moralis server
+
+      const serverUrl = "https://aanvnlcijebz.usemoralis.com:2053/server";
+      const appId = "jfOZefsTpggrDtu6R1OeUU1GWgJUUXM3QXEMIVdF";
+      Moralis.start({ serverUrl, appId });
+
+      const login = async () => {
+        Moralis.authenticate().then(function (user) {
+              console.log("authenticated!!");
+              alert("authenticated!!");
+        })
+      }
+
+      const doUpload = async () => {
+            alert("uploading ")
+            // Save file input to IPFS
+            const image = await uploadFile();
+            await uploadMetadata(image);
+       }      
+      
+      uploadFile = async () => {
+        const data = fileInput.files[0]
+        const file = new Moralis.File(data.name, data)
+        await file.saveIPFS();
+        
+        return file.ipfs();  
+      }
+
+      uploadMetadata = async (imageURL) => {
+    
+        const name = document.getElementById("metadataName").value;
+        const description = document.getElementById("description").value;
+
+        const metadata = {
+              "name":name,
+              "description":description,
+              "image":imageURL  
+        }
+
+        const file = new Moralis.File("file.json", {base64 : btoa(JSON.stringify(metadata))});
+        await file.saveIPFS();
+    
+        console.log(file.ipfs());
+    }
+
+    </script>
+  </body>
+</html>
